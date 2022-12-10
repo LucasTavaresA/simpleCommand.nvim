@@ -8,6 +8,21 @@ M.default_config = {
   open_with = "terminal",
   ---@type string
   commands_file = vim.fn.stdpath("data") .. "/commands.lua",
+  float = {
+    close_key = "<ESC>",
+    -- Window border (see ':h nvim_open_win')
+    border = "none",
+    -- Num from `0 - 1` for measurements
+    height = 0.8,
+    width = 0.8,
+    x = 0.5,
+    y = 0.5,
+    -- Highlight group for floating window/border (see ':h winhl')
+    border_hl = "FloatBorder",
+    float_hl = "Normal",
+    -- Transparency (see ':h winblend')
+    blend = 0,
+  },
 }
 ---@type table
 Commands = {}
@@ -45,7 +60,11 @@ function M.command()
     command = Commands[cwd]
   end
 
-  if M.config.open_with == "message" then
+  if M.config.open_with == "float" then
+    open = function(cmd)
+      require("utils.utils").floating(cmd)
+    end
+  elseif M.config.open_with == "message" then
     open = function(cmd)
       vim.cmd(":!" .. cmd)
     end
