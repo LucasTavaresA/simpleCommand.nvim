@@ -33,8 +33,10 @@ require("command").setup({
   prompt = "$ ",
   -- you can open with: "float", "message", "terminal"
   open_with = "terminal",
-  -- file where commands and overrides are saved.
-  commands_file = vim.fn.stdpath("data") .. "/commands.lua",
+  -- file where commands are saved.
+  commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
+  -- file where overrides are loaded, see overrides below.
+  overrides_file = vim.fn.stdpath("data") .. "/command.nvim/overrides.lua",
   -- only works when `open_with` is set to "float"
   float = {
     close_key = "<ESC>",
@@ -54,7 +56,13 @@ require("command").setup({
 })
 ```
 
-## Overrides [WIP]
+## Overrides
 
-You can add overrides in the `Overrides` array inside of the `commands_file` and
-those commands will always get prompted
+You need to create the `overrides_file` and add
+
+```lua
+Overrides = { ["/example/folder/"] = "example command" }
+```
+
+as expected, those commands will always get prompted and will never be
+overwritten

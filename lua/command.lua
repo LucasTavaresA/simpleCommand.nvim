@@ -7,7 +7,8 @@ M.default_config = {
   ---@type string
   open_with = "terminal",
   ---@type string
-  commands_file = vim.fn.stdpath("data") .. "/commands.lua",
+  commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
+  overrides_file = vim.fn.stdpath("data") .. "/command.nvim/overrides.lua",
   float = {
     close_key = "<ESC>",
     -- Window border (see ':h nvim_open_win')
@@ -32,15 +33,12 @@ Overrides = {}
 -- saves a key value pair table of the directories
 -- and their respective commands
 function M.save_commands()
+  os.execute("mkdir -p " .. vim.fs.dirname(M.config.commands_file))
+  os.execute("mkdir -p " .. vim.fs.dirname(M.config.overrides_file))
   local file, err = io.open(M.config.commands_file, "w")
 
   if file then
-    file:write(
-      "Commands = "
-        .. vim.inspect(Commands)
-        .. "\nOverrides = "
-        .. vim.inspect(Overrides)
-    )
+    file:write("Commands = " .. vim.inspect(Commands))
     file:close()
   else
     error("Error opening file: " .. err)
@@ -50,6 +48,8 @@ end
 -- executes a command according to your current working directory on the
 -- `commands` table
 function M.command()
+  pcall(dofile, M.config.commands_file)
+  pcall(dofile, M.config.overrides_file)
   local cwd = vim.fn.getcwd()
   local command
   local open
@@ -91,8 +91,6 @@ function M.setup(config)
     vim.validate({ config = { config, "table", true } })
     M.config = vim.tbl_deep_extend("force", M.default_config, config or {})
   end
-
-  pcall(dofile, M.config.commands_file)
 
   local group = vim.api.nvim_create_augroup("command", {})
   vim.api.nvim_create_autocmd("VimLeavePre", {
