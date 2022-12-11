@@ -25,6 +25,8 @@ M.default_config = {
     blend = 0,
   },
 }
+---@type function
+local open
 ---@type table
 Commands = {}
 ---@type table
@@ -52,26 +54,11 @@ function M.command()
   pcall(dofile, M.config.overrides_file)
   local cwd = vim.fn.getcwd()
   local command
-  local open
 
   if type(Overrides[cwd]) ~= "nil" then
     command = Overrides[cwd]
   elseif type(Commands[cwd]) ~= "nil" then
     command = Commands[cwd]
-  end
-
-  if M.config.open_with == "float" then
-    open = function(cmd)
-      require("utils.utils").floating(cmd)
-    end
-  elseif M.config.open_with == "message" then
-    open = function(cmd)
-      vim.cmd(":!" .. cmd)
-    end
-  else
-    open = function(cmd)
-      vim.cmd(":terminal " .. cmd)
-    end
   end
 
   vim.ui.input({ prompt = M.config.prompt, default = command }, function(input)
@@ -90,6 +77,20 @@ function M.setup(config)
   else
     vim.validate({ config = { config, "table", true } })
     M.config = vim.tbl_deep_extend("force", M.default_config, config or {})
+  end
+
+  if M.config.open_with == "float" then
+    open = function(cmd)
+      require("utils.utils").floating(cmd)
+    end
+  elseif M.config.open_with == "message" then
+    open = function(cmd)
+      vim.cmd(":!" .. cmd)
+    end
+  else
+    open = function(cmd)
+      vim.cmd(":terminal " .. cmd)
+    end
   end
 
   local group = vim.api.nvim_create_augroup("command", {})
