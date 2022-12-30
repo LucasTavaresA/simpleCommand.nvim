@@ -45,7 +45,11 @@ function M.save_commands()
   local file, err = io.open(M.config.commands_file, "w")
 
   if file then
-    file:write([[require("command").commands = ]] .. vim.inspect(M.commands))
+    file:write(
+      "---@type table\n"
+        .. [[require("command").commands = ]]
+        .. vim.inspect(M.commands)
+    )
     file:close()
   else
     error("Error opening file: " .. err)
@@ -55,7 +59,9 @@ end
 --- executes a command according to your current working directory on the `commands` table
 function M.command()
   local cwd = vim.fn.getcwd()
+  pcall(dofile, M.config.commands_file)
 
+  ---@param command string|nil
   local function prompt(command)
     vim.ui.input(
       { prompt = M.config.prompt, default = command },
@@ -66,6 +72,7 @@ function M.command()
 
           if not vim.tbl_contains(M.commands[cwd], command) then
             table.insert(M.commands[cwd], 1, command)
+            M.save_commands()
           end
         end
       end
@@ -100,8 +107,6 @@ function M.setup(config)
     M.config = vim.tbl_deep_extend("force", M.default_config, config or {})
   end
 
-  pcall(dofile, M.config.commands_file)
-
   if M.config.open_with == "float" then
     open = function(cmd)
       require("command.utils").floating(cmd)
@@ -115,13 +120,6 @@ function M.setup(config)
       vim.cmd(":terminal " .. cmd)
     end
   end
-
-  local group = vim.api.nvim_create_augroup("command", {})
-  vim.api.nvim_create_autocmd("VimLeavePre", {
-    pattern = { "*" },
-    group = group,
-    callback = M.save_commands,
-  })
 end
 
 return M
