@@ -81,7 +81,7 @@ function M.setup(config)
 
   if M.config.open_with == "float" then
     open = function(cmd)
-      require("utils.utils").floating(cmd)
+      require("command.utils").floating(cmd)
     end
   elseif M.config.open_with == "message" then
     open = function(cmd)
