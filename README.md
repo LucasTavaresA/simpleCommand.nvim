@@ -37,8 +37,6 @@ require("command").setup({
   open_with = "terminal",
   -- file where commands are saved.
   commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
-  -- file where overrides are loaded, see overrides below.
-  overrides_file = vim.fn.stdpath("data") .. "/command.nvim/overrides.lua",
 })
 ```
 
@@ -64,13 +62,3 @@ float = {
 },
 ```
 
-## Overrides
-
-You need to create the `overrides_file` and add
-
-```lua
-require("command").Overrides = { ["/some/folder/"] = { "command1", "command2" } }
-```
-
-as expected, those commands will always get prompted and will never be
-overwritten
