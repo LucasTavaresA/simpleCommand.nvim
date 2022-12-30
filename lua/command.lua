@@ -39,18 +39,18 @@ M.default_config = {
 ---@type function
 local open
 ---@type table
-Commands = {}
+M.Commands = {}
 ---@type table
-Overrides = {}
+M.Overrides = {}
 
 --- saves a key value pair table of the directories and their respective commands
 function M.save_commands()
-  os.execute("mkdir -p " .. vim.fs.dirname(M.config.commands_file))
-  os.execute("mkdir -p " .. vim.fs.dirname(M.config.overrides_file))
   local file, err = io.open(M.config.commands_file, "w")
 
+  os.execute("mkdir -p " .. vim.fs.dirname(M.config.commands_file))
+
   if file then
-    file:write("Commands = " .. vim.inspect(Commands))
+    file:write([[require("command").Commands = ]] .. vim.inspect(M.Commands))
     file:close()
   else
     error("Error opening file: " .. err)
@@ -59,24 +59,53 @@ end
 
 --- executes a command according to your current working directory on the `commands` table
 function M.command()
-  pcall(dofile, M.config.commands_file)
-  pcall(dofile, M.config.overrides_file)
   local cwd = vim.fn.getcwd()
-  local command
 
-  if type(Overrides[cwd]) ~= "nil" then
-    command = Overrides[cwd]
-  elseif type(Commands[cwd]) ~= "nil" then
-    command = Commands[cwd]
+  local function prompt(command)
+    vim.ui.input(
+      { prompt = M.config.prompt, default = command },
+      function(input)
+        command = input
+        if command ~= nil then
+          open(command)
+
+          if M.Commands[cwd] == nil then
+            M.Commands[cwd] = { command }
+          elseif not vim.tbl_contains(M.Commands[cwd], command) then
+            table.insert(M.Commands[cwd], 1, command)
+          end
+        end
+      end
+    )
   end
 
-  vim.ui.input({ prompt = M.config.prompt, default = command }, function(input)
-    command = input
-    if command ~= nil then
-      open(command)
-      Commands[cwd] = command
+  if type(M.Overrides[cwd]) == "table" then
+    if #M.Overrides[cwd] == 1 then
+      prompt(M.Overrides[cwd][1])
+    else
+      vim.ui.select(
+        M.Overrides[cwd],
+        { prompt = "Select a command:" },
+        function(choice)
+          prompt(choice)
+        end
+      )
     end
-  end)
+  elseif type(M.Commands[cwd]) == "table" then
+    if #M.Commands[cwd] == 1 then
+      prompt(M.Commands[cwd][1])
+    else
+      vim.ui.select(
+        M.Commands[cwd],
+        { prompt = "Select a command:" },
+        function(choice)
+          prompt(choice)
+        end
+      )
+    end
+  else
+    prompt()
+  end
 end
 
 ---@param config table|nil
@@ -87,6 +116,9 @@ function M.setup(config)
     vim.validate({ config = { config, "table", true } })
     M.config = vim.tbl_deep_extend("force", M.default_config, config or {})
   end
+
+  pcall(dofile, M.config.commands_file)
+  pcall(dofile, M.config.overrides_file)
 
   if M.config.open_with == "float" then
     open = function(cmd)
