@@ -8,20 +8,31 @@ M.default_config = {
   open_with = "terminal",
   ---@type string
   commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
+  ---@type string
   overrides_file = vim.fn.stdpath("data") .. "/command.nvim/overrides.lua",
+  ---@type table
   float = {
+    ---@type string
     close_key = "<ESC>",
-    -- Window border (see ':h nvim_open_win')
+    --- Window border (see ':h nvim_open_win')
+    ---@type string
     border = "none",
-    -- Num from `0 - 1` for measurements
+    --- Num from `0 - 1` for measurements
+    ---@type number
     height = 0.8,
+    ---@type number
     width = 0.8,
+    ---@type number
     x = 0.5,
+    ---@type number
     y = 0.5,
-    -- Highlight group for floating window/border (see ':h winhl')
+    --- Highlight group for floating window/border (see ':h winhl')
+    ---@type string
     border_hl = "FloatBorder",
+    ---@type string
     float_hl = "Normal",
-    -- Transparency (see ':h winblend')
+    --- Transparency (see ':h winblend')
+    ---@type number
     blend = 0,
   },
 }
@@ -32,8 +43,7 @@ Commands = {}
 ---@type table
 Overrides = {}
 
--- saves a key value pair table of the directories
--- and their respective commands
+--- saves a key value pair table of the directories and their respective commands
 function M.save_commands()
   os.execute("mkdir -p " .. vim.fs.dirname(M.config.commands_file))
   os.execute("mkdir -p " .. vim.fs.dirname(M.config.overrides_file))
@@ -47,8 +57,7 @@ function M.save_commands()
   end
 end
 
--- executes a command according to your current working directory on the
--- `commands` table
+--- executes a command according to your current working directory on the `commands` table
 function M.command()
   pcall(dofile, M.config.commands_file)
   pcall(dofile, M.config.overrides_file)

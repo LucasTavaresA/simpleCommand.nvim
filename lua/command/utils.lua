@@ -1,4 +1,6 @@
+---@type table
 local M = {}
+---@type table
 local opt = require("command").config.float
 
 --- creates a floating window
