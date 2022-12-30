@@ -3,7 +3,7 @@ local M = {}
 ---@type table
 M.default_config = {
   ---@type string
-  prompt = "$ ",
+  prompt = "command> ",
   ---@type string
   open_with = "terminal",
   ---@type string
