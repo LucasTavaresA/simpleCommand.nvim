@@ -4,19 +4,17 @@ local M = {}
 M.default_config = {
   ---@type string
   prompt = "command> ",
-  ---@type string
+  ---@type string you can open with: "float", "message", "terminal".
   open_with = "terminal",
-  ---@type string
+  ---@type string file where commands are saved.
   commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
-  ---@type table
+  ---@type table optios to customize the window when `open_with` is set to float.
   float = {
     ---@type string
     close_key = "<ESC>",
-    --- Window border (see ':h nvim_open_win')
-    ---@type string
+    ---@type string Window border (see ':h nvim_open_win')
     border = "none",
-    --- Num from `0 - 1` for measurements
-    ---@type number
+    ---@type number Num from `0 - 1` for measurements
     height = 0.8,
     ---@type number
     width = 0.8,
@@ -24,13 +22,11 @@ M.default_config = {
     x = 0.5,
     ---@type number
     y = 0.5,
-    --- Highlight group for floating window/border (see ':h winhl')
-    ---@type string
+    ---@type string Highlight group for floating window/border (see ':h winhl')
     border_hl = "FloatBorder",
     ---@type string
     float_hl = "Normal",
-    --- Transparency (see ':h winblend')
-    ---@type number
+    ---@type number Transparency (see ':h winblend')
     blend = 0,
   },
 }

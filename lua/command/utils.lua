@@ -3,8 +3,7 @@ local M = {}
 ---@type table
 local opt = require("command").config.float
 
---- creates a floating window
----@param command string
+---@param command string creates a floating window
 function M.floating(command)
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_keymap(
