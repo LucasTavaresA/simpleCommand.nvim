@@ -21,9 +21,7 @@ use {
 ## Usage
 
 ```lua
-vks("n", "<leader>c", function()
-  require("command").command()
-end)
+vim.keymap.set("n", "<leader>c", require("command").command)
 ```
 
 ## Customization
