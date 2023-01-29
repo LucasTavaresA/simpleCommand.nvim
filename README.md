@@ -1,4 +1,4 @@
-# command.nvim
+# simpleCommand.nvim
 
 Simple command runner that prompts you for a command based on neovim cwd and save a lua
 table to a file
@@ -11,9 +11,9 @@ table to a file
 
 ```lua
 use {
-  'lucastavaresa/command.nvim',
+  'lucastavaresa/simpleCommand.nvim',
   config = function()
-    require("command").setup()
+    require("simpleCommand").setup()
   end
 }
 ```
@@ -21,7 +21,7 @@ use {
 ## Usage
 
 ```lua
-vim.keymap.set("n", "<leader>c", require("command").command)
+vim.keymap.set("n", "<leader>c", require("simpleCommand").command)
 ```
 
 ## Customization
@@ -29,12 +29,12 @@ vim.keymap.set("n", "<leader>c", require("command").command)
 Default config:
 
 ```lua
-require("command").setup({
+require("simpleCommand").setup({
   prompt = "command> ",
   -- you can open with: "float", "message", "terminal"
   open_with = "terminal",
   -- file where commands are saved.
-  commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
+  commands_file = vim.fn.stdpath("data") .. "/simpleCommand.nvim/commands.lua",
 })
 ```
 

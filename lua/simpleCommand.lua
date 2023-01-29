@@ -7,7 +7,7 @@ M.default_config = {
   ---@type string you can open with: "float", "message", "terminal".
   open_with = "terminal",
   ---@type string file where commands are saved.
-  commands_file = vim.fn.stdpath("data") .. "/command.nvim/commands.lua",
+  commands_file = vim.fn.stdpath("data") .. "/simpleCommand.nvim/commands.lua",
   ---@type table optios to customize the window when `open_with` is set to float.
   float = {
     ---@type string
@@ -43,7 +43,7 @@ function M.save_commands()
   if file then
     file:write(
       "---@type table\n"
-        .. [[require("command").commands = ]]
+        .. [[require("simpleCommand").commands = ]]
         .. vim.inspect(M.commands)
     )
     file:close()
@@ -105,7 +105,7 @@ function M.setup(config)
 
   if M.config.open_with == "float" then
     open = function(cmd)
-      require("command.utils").floating(cmd)
+      require("simpleCommand.utils").floating(cmd)
     end
   elseif M.config.open_with == "message" then
     open = function(cmd)

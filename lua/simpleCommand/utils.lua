@@ -1,7 +1,7 @@
 ---@type table
 local M = {}
 ---@type table
-local opt = require("command").config.float
+local opt = require("simpleCommand").config.float
 
 ---@param command string creates a floating window
 function M.floating(command)
