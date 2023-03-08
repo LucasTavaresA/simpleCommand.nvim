@@ -5,8 +5,6 @@ table to a file
 
 ## Installation
 
-**You need to use the setup() function to load this plugin**
-
 [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
@@ -21,7 +19,24 @@ use {
 ## Usage
 
 ```lua
+-- executes with ":! <command>"
 vim.keymap.set("n", "<leader>c", require("simpleCommand").command)
+-- executes in a fullscreen terminal
+vim.keymap.set("n", "<leader>c", function()
+  require("simpleCommand").command(":edit term://")
+end)
+-- executes in a terminal split
+vim.keymap.set("n", "<leader>c", function()
+  require("simpleCommand").command(":split term://")
+end)
+-- executes in a vertical terminal split
+vim.keymap.set("n", "<leader>c", function()
+  require("simpleCommand").command(":vsplit term://")
+end)
+-- executes in a floating window
+vim.keymap.set("n", "<leader>c", function()
+  require("simpleCommand").command("float")
+end)
 ```
 
 ## Customization
@@ -31,8 +46,6 @@ Default config:
 ```lua
 require("simpleCommand").setup({
   prompt = "command> ",
-  -- you can open with: "float", "message", "terminal"
-  open_with = "terminal",
   -- file where commands are saved.
   commands_file = vim.fn.stdpath("data") .. "/simpleCommand.nvim/commands.lua",
 })
@@ -40,7 +53,7 @@ require("simpleCommand").setup({
 
 ### floating window
 
-Options to customize the floating window when `open_with` is set to `float`
+Options to customize the floating window
 
 ```lua
 float = {
@@ -59,4 +72,3 @@ float = {
   blend = 0,
 },
 ```
-

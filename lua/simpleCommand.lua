@@ -4,8 +4,6 @@ local M = {}
 M.default_config = {
   ---@type string
   prompt = "command> ",
-  ---@type string you can open with: "float", "message", "terminal".
-  open_with = "terminal",
   ---@type string file where commands are saved.
   commands_file = vim.fn.stdpath("data") .. "/simpleCommand.nvim/commands.lua",
   ---@type table optios to customize the window when `open_with` is set to float.
@@ -53,7 +51,22 @@ function M.save_commands()
 end
 
 --- executes a command according to your current working directory on the `commands` table
-function M.command()
+---@param open_with string|nil
+function M.command(open_with)
+  if open_with == nil then
+    open = function(cmd)
+      vim.cmd(":! " .. cmd)
+    end
+  elseif open_with == "float" then
+    open = function(cmd)
+      require("simpleCommand.utils").floating(cmd)
+    end
+  elseif type(open_with) == "string" then
+    open = function(cmd)
+      vim.cmd(open_with .. cmd)
+    end
+  end
+
   local cwd = vim.fn.getcwd()
   pcall(dofile, M.config.commands_file)
 
@@ -101,20 +114,6 @@ function M.setup(config)
   else
     vim.validate({ config = { config, "table", true } })
     M.config = vim.tbl_deep_extend("force", M.default_config, config or {})
-  end
-
-  if M.config.open_with == "float" then
-    open = function(cmd)
-      require("simpleCommand.utils").floating(cmd)
-    end
-  elseif M.config.open_with == "message" then
-    open = function(cmd)
-      vim.cmd(":!" .. cmd)
-    end
-  else
-    open = function(cmd)
-      vim.cmd(":terminal " .. cmd)
-    end
   end
 end
 
