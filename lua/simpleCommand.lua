@@ -75,8 +75,10 @@ function M.command(open_with)
     vim.ui.input(
       { prompt = M.config.prompt, default = command },
       function(input)
-        command = input
-        if command ~= nil then
+        input = input:gsub("^(%s*)(.-)(%s*)$", "%2")
+
+        if input ~= "" then
+          command = input
           open(command)
 
           if not vim.tbl_contains(M.commands[cwd], command) then
